@@ -30,10 +30,8 @@ clear tmp;
 % Nearest neighbors search
 numNeighbors = 8;
 [IDX,~] = knnsearch(train_descr',test_descr','K',numNeighbors);
-%IDX = gpu_knn(train_descr,test_descr,numNeighbors,fid);
-%IDX = IDX(1:numNeighbors,:)';
-
-%keyboard;
+% IDX = gpu_knn(train_descr,test_descr,numNeighbors,fid);
+% IDX = IDX(1:numNeighbors,:)';
 
 % SVHN labels
 digit_labels = [1:10];

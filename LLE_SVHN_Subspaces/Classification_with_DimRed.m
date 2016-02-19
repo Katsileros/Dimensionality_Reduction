@@ -7,7 +7,27 @@
 
 
 % Executing nearest neighbor search for classification results
-function err = Classification_with_DimRed(Y, train_labels, test_labels, N_train, N_test, batch_size, fid)
+function err = Classification_with_DimRed(train_descr, test_descr, train_labels, test_labels, N_train, N_test, batch_size, fid)
+
+% Make train data
+tmp = train_descr;
+clear train_descr;
+train_descr = zeros(size(tmp{1,1},1),N_train);
+
+for i=1:N_train
+    train_descr(:,i) = tmp{i,1};
+end
+
+% Make test data
+tmp = test_descr;
+clear test_descr;
+test_descr = zeros(size(tmp{1,1},1),N_test);
+
+for i=1:N_test
+    test_descr(:,i) = tmp{i,1};
+end
+clear tmp;
+
 
 all_spaces_classification_labeling = zeros(floor(N_train ./ batch_size),N_test);
 
@@ -16,12 +36,7 @@ for iter=1:floor(N_train ./ batch_size)
     
     % Nearest neighbors search
     numNeighbors = 8;
-
-   [IDX,~] = knnsearch(Y(:,(iter-1)*(batch_size+N_test) + 1:(iter-1)*(batch_size+N_test) + ... 
-    batch_size)',Y(:,((iter-1)*(batch_size+N_test)) + batch_size + 1:(iter*(batch_size+N_test)))','K',numNeighbors);
-
-%     IDX = gpu_knn(Y(:,(iter-1)*(batch_size+N_test) + 1:(iter-1)*(batch_size+N_test) + batch_size),Y(:,((iter-1)*(batch_size+N_test)) + batch_size + 1:(iter*(batch_size+N_test))),numNeighbors,fid);
-
+    [IDX,~] = knnsearch(train_descr(:,(iter-1)*batch_size+1:(iter-1)*batch_size + batch_size)',test_descr','K',numNeighbors);
     IDX = IDX + (iter-1)*batch_size;
     
     % MNIST labels 
@@ -41,8 +56,7 @@ for iter=1:floor(N_train ./ batch_size)
             end
         end
 
-        [~,id] = max(nn_votings);
-        classification_labeling(1,i) = id;
+        [~,classification_labeling(1,i)] = max(nn_votings);
 
         overall_digit_labels(1,test_labels(i,1)) = overall_digit_labels(1,test_labels(i,1)) + 1;
 
@@ -58,7 +72,7 @@ for iter=1:floor(N_train ./ batch_size)
         error_labels(1,i) = error_labels(1,i) ./ overall_digit_labels(1,i);
 %         fprintf('Error for digit-%d is: %f \n',mod(i,10),error_labels(1,i).*100);
     end
-
+    
     fprintf(fid,'\nMean average error (subSpace-%d): %f \n', iter, (sum(error_labels) ./ 10 ) .* 100);
 
 end
@@ -77,8 +91,7 @@ for i=1:N_test
         end
     end
     
-    [~,id] = max(subSpace_voting);
-    subSpace_classification_labeling(1,i) = id;
+    [~,subSpace_classification_labeling(1,i)] = max(subSpace_voting);
     
     % Count accurate results
     if(subSpace_classification_labeling(1,i) ~= test_labels(i,1))
@@ -92,7 +105,7 @@ for i=1:10
 end
 
 err =  (sum(error_labels) ./ 10 ) .* 100; 
-fprintf(fid,'\nMean average error after subSpace voting is: %f \n',err);
-fprintf('\nMean average error after subSpace voting is: %f \n',err);
+fprintf(fid,'Mean average error after subSpace voting is: %f \n',err);
+fprintf('Mean average error after subSpace voting is: %f \n\n',err);
 
 end
