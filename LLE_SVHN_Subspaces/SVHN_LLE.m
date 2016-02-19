@@ -16,8 +16,8 @@ fprintf(fid,'Start \n %s \n',datestr(now));
 fclose(fid);
 
 % Num of neighbors
-K = [8; 10; 12];
-%K = [8];
+% K = [8; 10; 12];
+K = [8];
 
 % Num of new dimensionality 
 d = [16; 20; 32; 64; 96; 128; 164; 196; 256]; % HoG
@@ -36,7 +36,7 @@ load('dataset/test_labels.mat');
 
 %% Subsampling data
 % Clust size is the number of train data for each class
-clust_size = 1000;
+clust_size = 100;
 clust_ids = cell(10,1);
 final_data = zeros(size(X,1),size(X,2),clust_size*10);
 final_labels = zeros(clust_size*10,1);
@@ -62,7 +62,7 @@ clear final_labels;
 
 % Test Data-size
 % N_test = size(testX,3);
-N_test = 200;
+N_test = 120;
 testX = single(testX(:,:,1:N_test));
 
 %% Preprocessing
@@ -104,7 +104,9 @@ unique_test_all_descriptors = double(unique_test_all_descriptors');
 Ntest = size(unique_test_all_descriptors,2);
 
 % Batch size 
-batch_size = floor([ Ntrain; (Ntrain./2); (Ntrain./4); (Ntrain./5) ]);
+% batch_size = floor([ Ntrain; (Ntrain./2); (Ntrain./4); (Ntrain./5) ]);
+batch_size = floor([ Ntrain; (Ntrain./2)]);
+% batch_size = Ntrain;
 
 results_classification_err = zeros(length(K), length(batch_size),length(d));
 
@@ -122,13 +124,19 @@ for i=1:length(K)
         fid=fopen(file_name,'w');
         
         Y = digits(unique_train_all_descriptors, unique_test_all_descriptors, K(i,1), d(end,1), fid, Ntrain, batch_size(k,1), batch_folder_name);
-        tmp_train_all_desc = Y(:,unique_train_bins);
-        tmp_test_all_desc = Y(:,size(unique_train_all_descriptors,2)+unique_test_bins);
+%         tmp_test_all_desc = Y(:,size(unique_train_all_descriptors,2)+unique_test_bins);
+        tmp_test_all_desc = Y(:,batch_size(k,1)+unique_test_bins);
         
         %% Make data-features to the appropriate format
         % Train data
         final_train_descr = cell(N_train,1);
-        for t=1:N_train
+        tmp_train_all_desc = [];
+        for b=1:floor(Ntrain ./ batch_size(k,1))
+            tmp_train_all_desc = [ tmp_train_all_desc Y(:,(b-1)*Ntest + ((b-1)*batch_size(k,1) + 1) : ...
+                                                          (b-1)*Ntest + ((b-1)*batch_size(k,1) + batch_size(k,1)))];
+        end
+%         tmp_train_all_desc = tmp_train_all_desc(:,unique_train_bins);
+        for t=1:Ntrain
             final_train_descr{t,1} = [];
             final_train_descr{t,1} = [final_train_descr{t,1} tmp_train_all_desc(:,t)] ; % HoG
         end
@@ -158,9 +166,12 @@ for i=1:length(K)
             
             lowerY = Y(1:d(j,1),:);
             
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            %%%             ERROR HERE              %%%%
             tmp_train_all_desc = lowerY(:,unique_train_bins);
             tmp_test_all_desc = lowerY(:,size(unique_train_all_descriptors,2)+unique_test_bins);
-        
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            
             %% Make data to the appropriate format
             % Train data
             final_train_descr = cell(N_train,1);
