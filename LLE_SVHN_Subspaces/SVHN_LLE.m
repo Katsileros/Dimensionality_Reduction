@@ -21,7 +21,7 @@ K = [12];
 
 % Num of new dimensionality 
 % d = [16; 20; 32; 64; 96; 128; 164; 196; 256]; % HoG
-d = [32];
+d = [32;48];
 
 % HoG kernel size 
 hog_kernel = [4 4];
@@ -36,7 +36,7 @@ load('dataset/test_labels.mat');
 
 %% Subsampling data
 % Clust size is the number of train data for each class
-clust_size = 200;
+clust_size = 80;
 clust_ids = cell(10,1);
 final_data = zeros(size(X,1),size(X,2),clust_size*10);
 final_labels = zeros(clust_size*10,1);
@@ -111,8 +111,8 @@ Ntest = size(unique_test_all_descriptors,2);
 
 % Batch size 
 % batch_size = floor([ Ntrain; (Ntrain./2); (Ntrain./4); (Ntrain./5) ]);
-batch_size = floor([ Ntrain; (Ntrain./5)]);
-% batch_size = Ntrain;
+% batch_size = floor([ Ntrain; (Ntrain./5)]);
+batch_size = Ntrain;
 
 results_classification_err = zeros(length(K), length(batch_size),length(d));
 
@@ -130,8 +130,10 @@ for i=1:length(K)
         fid=fopen(file_name,'w');
         
         Y = digits(unique_train_all_descriptors, unique_test_all_descriptors, K(i,1), d(end,1), fid, Ntrain, batch_size(k,1), batch_folder_name);
+        Ntrain = size(unique_train_all_descriptors,2);
+        Ntest = size(unique_test_all_descriptors,2);
 
-        %% Make data-features to the appropriate format
+        %% Make data-features to the appropriate format (Subspaces ids)
         % Train data
         tmp_train_all_desc = [];
         tmp_test_all_desc = [];
@@ -159,46 +161,22 @@ for i=1:length(K)
         % Classification results
         tic;
         err = 0;
-        err = Classification_with_DimRed(final_train_descr, final_test_descr, train_labels, test_labels, Ntrain, Ntest, batch_size(k,1), fid) ;
-	results_classification_err(i,k,length(d)) = err;
+        err = Classification_with_DimRed(final_train_descr, final_test_descr, train_labels, test_labels, Ntrain, Ntest, batch_size(k,1), d(end,1), fid, batch_folder_name) ;
+        results_classification_err(i,k,length(d)) = err;
         fprintf(fid,'Classification without dimRed elapsed time: %6f \n',toc);
         fclose(fid);
         
         % Keep the lower dimensions
         for j=1:(length(d)-1)
-            err = 0;  
             fprintf('Running for K:%d, d:%d, batch_size:%d \n', K(i,1), d(j,1), batch_size(k,1));
             
             file_name = strcat(batch_folder_name, int2str(K(i,1)), 'nn_', int2str(d(j,1)), 'd',int2str(batch_size(k,1)),'_batch.txt');
             fid=fopen(file_name,'w');
             
-            lowerY = Y(1:d(j,1),:);
-            
-            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-            %%%             ERROR HERE              %%%%
-            tmp_train_all_desc = lowerY(:,unique_train_bins);
-            tmp_test_all_desc = lowerY(:,size(unique_train_all_descriptors,2)+unique_test_bins);
-            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-            
-            %% Make data to the appropriate format
-            % Train data
-            final_train_descr = cell(N_train,1);
-            for t=1:N_train
-                final_train_descr{t,1} = [];
-                final_train_descr{t,1} = [final_train_descr{t,1} tmp_train_all_desc(:,t)] ; % HoG
-            end
-            
-            % Test data
-            final_test_descr = cell(N_test,1);
-            for t=1:N_test
-                final_test_descr{t,1} = [];
-                final_test_descr{t,1} = [final_test_descr{t,1} tmp_test_all_desc(:,t)] ; % HoG
-            end
-            
             % Classification results
             tic;
             err = 0;
-            err = Classification_with_DimRed(final_train_descr, final_test_descr, train_labels, test_labels, N_train, N_test, batch_size(k,1), fid);
+            err = Classification_with_DimRed(final_train_descr, final_test_descr, train_labels, test_labels, N_train, N_test, batch_size(k,1), d(j,1), fid, batch_folder_name);
 %             err = Classification_with_DimRed_swsto(final_train_descr, final_test_descr, train_labels, test_labels, N_train, N_test, fid);
             results_classification_err(i,k,j) = err;
             fprintf(fid,'Classification with dimRed elapsed time: %6f \n',toc);

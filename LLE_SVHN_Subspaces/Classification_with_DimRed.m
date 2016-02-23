@@ -7,24 +7,24 @@
 
 
 % Executing nearest neighbor search for classification results
-function err = Classification_with_DimRed(train_descr, test_descr, train_labels, test_labels, Ntrain, Ntest, batch_size, fid)
+function err = Classification_with_DimRed(train_descr, test_descr, train_labels, test_labels, Ntrain, Ntest, batch_size, dim, fid, folder)
 
 % Make train data
 tmp = train_descr;
 clear train_descr;
-train_descr = zeros(size(tmp{1,1},1),Ntrain);
+train_descr = zeros(dim,Ntrain);
 
 for i=1:Ntrain
-    train_descr(:,i) = tmp{i,1};
+    train_descr(:,i) = tmp{i,1}(1:dim,1);
 end
 
 % Make test data
 tmp = test_descr;
 clear test_descr;
-test_descr = zeros(size(tmp{1,1},1),Ntest);
+test_descr = zeros(dim,Ntest);
 
 for i=1:Ntest
-    test_descr(:,i) = tmp{i,1};
+    test_descr(1:dim,i) = tmp{i,1}(1:dim,1);
 end
 clear tmp;
 
@@ -71,9 +71,10 @@ for iter=1:floor(Ntrain ./ batch_size)
 
     for i=1:10
         error_labels(1,i) = error_labels(1,i) ./ overall_digit_labels(1,i);
-%         fprintf('Error for digit-%d is: %f \n',mod(i,10),error_labels(1,i).*100);
+        fprintf(fid,'\nError for digit-%d is: %f \n',mod(i,10),error_labels(1,i).*100);
     end
-    
+   
+    save(strcat(folder,'error_labels_',num2str(iter),'.mat'),'error_labels');
     fprintf(fid,'\nMean average error (subSpace-%d): %f \n', iter, (sum(error_labels) ./ 10 ) .* 100);
 
 end
