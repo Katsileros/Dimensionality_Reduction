@@ -7,36 +7,37 @@
 
 
 % Executing nearest neighbor search for classification results
-function err = Classification_with_DimRed(train_descr, test_descr, train_labels, test_labels, N_train, N_test, batch_size, fid)
+function err = Classification_with_DimRed(train_descr, test_descr, train_labels, test_labels, Ntrain, Ntest, batch_size, fid)
 
 % Make train data
 tmp = train_descr;
 clear train_descr;
-train_descr = zeros(size(tmp{1,1},1),N_train);
+train_descr = zeros(size(tmp{1,1},1),Ntrain);
 
-for i=1:N_train
+for i=1:Ntrain
     train_descr(:,i) = tmp{i,1};
 end
 
 % Make test data
 tmp = test_descr;
 clear test_descr;
-test_descr = zeros(size(tmp{1,1},1),N_test);
+test_descr = zeros(size(tmp{1,1},1),Ntest);
 
-for i=1:N_test
+for i=1:Ntest
     test_descr(:,i) = tmp{i,1};
 end
 clear tmp;
 
-
-all_spaces_classification_labeling = zeros(floor(N_train ./ batch_size),N_test);
+all_spaces_classification_labeling = zeros(floor(Ntrain ./ batch_size),(Ntest./(floor(Ntrain ./ batch_size))));
 
 % Iter to all sub-spaces
-for iter=1:floor(N_train ./ batch_size)
+for iter=1:floor(Ntrain ./ batch_size)
+    N_train = Ntrain ./ (floor(Ntrain ./ batch_size));
+    N_test = Ntest ./ (floor(Ntrain ./ batch_size));
     
     % Nearest neighbors search
     numNeighbors = 8;
-    [IDX,~] = knnsearch(train_descr(:,(iter-1)*batch_size+1:(iter-1)*batch_size + batch_size)',test_descr','K',numNeighbors);
+    [IDX,~] = knnsearch(train_descr(:,(iter-1)*batch_size+1:(iter-1)*batch_size + batch_size)',test_descr(:,(iter-1)*N_test+1:iter*N_test)','K',numNeighbors);
     IDX = IDX + (iter-1)*batch_size;
     
     % MNIST labels 
