@@ -4,7 +4,7 @@ clear all; close all; clc;
 % Param: [K batch d]
 load('Arcene_Experiments/results_classification_acc');
 
-no_dimRed = 73.33;
+no_dimRed = 76;
 
 % Experiment parameters
 % LLE Num of neighbors
