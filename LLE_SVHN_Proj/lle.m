@@ -17,7 +17,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [Y] = lle(X,K,d,fid,folder)
+function [Y] = lle(X,K,d,fid)
 
 [D,N] = size(X);
 fprintf(fid,'LLE running on %d points with %d dimensions\n',N,D);
@@ -91,7 +91,7 @@ fprintf(fid,'Elapsed time is: %6f \n',elapsedTime);
 
 % M*Y - Y*eigenvals
 
-save(strcat(folder,'eigenvals.mat'),'eigenvals');
+% save(strcat(folder,'eigenvals.mat'),'eigenvals');
 % eigenvals
 
 % Y = Y(:,2:d+1)'*sqrt(N); % bottom evect is [1,1,1,1...] with eval 0

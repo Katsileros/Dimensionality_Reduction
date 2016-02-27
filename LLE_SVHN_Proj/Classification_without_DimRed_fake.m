@@ -1,24 +1,23 @@
-%
-%  \brief     Classification on reduced dimensionality
-%             SVHN dataset with NN algorithm
-%  \author    Katsileros Petros
-%  \date      27/02/2016
-%  \copyright
-%
+ % 
+ %  \brief     Classification on SVHN dataset with NN algorithm
+ %  \author    Katsileros Petros
+ %  \date      13/02/2016
+ %  \copyright 
+ %
 
 % Executing nearest neighbor search for classification results
-function err = Classification_with_DimRed(D_train_descr, train_descr, test_descr, train_labels, test_labels, N_train, N_test, fid)
+function err = Classification_without_DimRed_fake(train_descr, test_descr, train_labels, test_labels, N_train, N_test, fid)
 
 % Make train data
 tmp = train_descr;
 clear train_descr;
-train_descr = zeros(size(tmp{1,1},2),N_train);
+train_descr = zeros(size(tmp{1,1},1),N_train);
 
 for i=1:N_train
     train_descr(:,i) = tmp{i,1};
 end
-clear tmp;
 
+% Make test data
 tmp = test_descr;
 clear test_descr;
 test_descr = zeros(size(tmp{1,1},2),N_test);
@@ -28,31 +27,13 @@ for i=1:N_test
 end
 clear tmp;
 
-numNeighbors = 4;
-[IDX,~] = knnsearch(D_train_descr', test_descr', 'K', numNeighbors);
-% [IDX,~] = knnsearch(train_descr', test_descr', 'K', numNeighbors);
-
-
-%% Project test data
-nn_graph = zeros(N_train,size(test_descr,2));
-d_test_descr = zeros(size(train_descr,1),size(test_descr,2));
-if(numNeighbors == 1)
-    d_test_descr = train_descr(:,IDX);
-else
-    % Loop for every test data
-    for i=1:size(test_descr,2)
-        nn_graph(IDX(i,:),i) = 1;
-        d_test_descr(:,i) = train_descr * nn_graph(:,i);
-    end
-end
-
 % Nearest neighbors search
-numNeighbors = 4;
-[IDX,~] = knnsearch(train_descr',d_test_descr','K',numNeighbors);
+numNeighbors = 8;
+[IDX,~] = knnsearch(train_descr',test_descr','K',numNeighbors);
 % IDX = gpu_knn(train_descr,test_descr,numNeighbors,fid);
 % IDX = IDX(1:numNeighbors,:)';
 
-% MNIST labels
+% SVHN labels
 digit_labels = [1:10];
 classification_labeling = zeros(1,N_test);
 error_labels = zeros(1,10);
@@ -85,8 +66,7 @@ for i=1:10
 end
 
 err = (sum(error_labels) ./ 10 ) .* 100;
-fprintf(fid,'\nMean average error with dimensionality reduction: %f \n', err);
-fprintf('Mean average error with dimensionality reduction: %f \n', err);
+fprintf(fid,'\nMean average error without dimensionality reduction: %f \n', err);
+fprintf('Mean average error without dimensionality reduction: %f \n\n', err);
 
 end
-

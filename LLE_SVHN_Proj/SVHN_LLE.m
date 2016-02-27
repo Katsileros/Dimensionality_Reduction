@@ -26,7 +26,7 @@ d = [32];
 
 % HoG kernel size 
 % kernels = {[2 2], [4 4], [8 8]}; % HoG features size {8100,1764,324}
-kernels = {[2 2]};
+kernels = {[4 4]};
 for kern=1:length(kernels)
 hog_kernel = kernels{1,kern};
 folder_prefix = strcat(folder_exp,'kern_size_[',int2str(hog_kernel(1,1)),'x',int2str(hog_kernel(1,2)),']/');
@@ -40,7 +40,7 @@ load('dataset/test_labels.mat');
 
 %% Subsampling data
 % Clust size is the number of train data for each class
-clust_size = 1000;
+clust_size = 300;
 clust_ids = cell(10,1);
 final_data = zeros(size(X,1),size(X,2),clust_size*10);
 final_labels = zeros(clust_size*10,1);
@@ -68,7 +68,7 @@ clear final_labels;
 
 % Test Data-size
 % N_test = size(testX,3);
-N_test = 2000;
+N_test = 200;
 testX = single(testX(:,:,1:N_test));
 
 %% Preprocessing
@@ -91,7 +91,8 @@ end
 
 % [unique_train_all_descriptors,unique_train_desc,unique_train_bins] = unique(train_all_descriptors','rows');   % SIFT
 [unique_train_all_descriptors,unique_train_desc,unique_train_bins] = unique(train_all_descriptors,'rows');      % HoG
-unique_train_all_descriptors = double(unique_train_all_descriptors');
+unique_train_all_descriptors = double(unique_train_all_descriptors(unique_train_bins,:)');
+train_all_descriptors = train_all_descriptors(unique_train_bins,:);
 Ntrain = size(unique_train_all_descriptors,2);
 
 fprintf('Test data feature extraction ... \n');
@@ -105,13 +106,6 @@ for i=1:N_test
     test_descriptors{i,1} = extractHOGFeatures(testX(:,:,i),'CellSize',hog_kernel);
     test_all_descriptors = [test_all_descriptors; test_descriptors{i,1}];
 end
-
-% [unique_test_all_descriptors,unique_test_desc,unique_test_bins] = unique(test_all_descriptors','rows');       % SIFT
-[unique_test_all_descriptors,unique_test_desc,unique_test_bins] = unique(test_all_descriptors,'rows');          % HoG
-unique_test_all_descriptors = double(unique_test_all_descriptors');
-Ntest = size(unique_test_all_descriptors,2);
-
-final_test_descr = unique_test_all_descriptors;
 
 % Batch size (Must be grater thna K) 
 batch_size = Ntrain;
@@ -131,49 +125,25 @@ for i=1:length(K)
         file_name = strcat(batch_folder_name, int2str(K(i,1)), 'nn_', int2str(d(end,1)), 'd',int2str(batch_size(k,1)),'_batch.txt');
         fid=fopen(file_name,'w');
         
-        Y = digits(unique_train_all_descriptors, unique_test_all_descriptors, K(i,1), d(end,1), fid, Ntrain, batch_size(k,1), batch_folder_name);
-        tmp_train_all_desc = Y(:,unique_train_bins);
+        Y = digits(unique_train_all_descriptors, K(i,1), d(end,1), fid);
         
         %% Make data-features to the appropriate format
         % Train data
         final_train_descr = cell(N_train,1);
         for t=1:N_train
             final_train_descr{t,1} = [];
-            final_train_descr{t,1} = [final_train_descr{t,1} tmp_train_all_desc(:,t)] ; % HoG
+            final_train_descr{t,1} = [final_train_descr{t,1} Y(:,t)] ; % HoG
         end
         
         % Classification results
         tic;
         err = 0;
-        err = Classification_with_DimRed(unique_train_all_descriptors, final_train_descr, final_test_descr, train_labels, test_labels, N_train, N_test, fid) ;
-	results_classification_err(i,k,length(d)) = err;
+        err = Classification_with_DimRed(unique_train_all_descriptors, train_descriptors, test_descriptors, train_labels, test_labels, N_train, N_test, fid) ;
+%         err = Classification_without_DimRed_fake(final_train_descr, test_descriptors, train_labels, test_labels, N_train, N_test, fid);
+        results_classification_err(i,k,length(d)) = err;
         fprintf(fid,'Classification without dimRed elapsed time: %6f \n',toc);
         fclose(fid);
         
-%         % Keep the lower dimensions
-%         for j=1:(length(d)-1)
-%             fprintf('Running for K:%d, d:%d, batch_size:%d \n', K(i,1), d(j,1), batch_size(k,1));
-%             
-%             file_name = strcat(batch_folder_name, int2str(K(i,1)), 'nn_', int2str(d(j,1)), 'd',int2str(batch_size(k,1)),'_batch.txt');
-%             fid=fopen(file_name,'w');
-%         
-%             %% Make data to the appropriate format
-%             % Train data
-%             final_train_descr = cell(N_train,1);
-%             for t=1:N_train
-%                 final_train_descr{t,1} = [];
-%                 final_train_descr{t,1} = [final_train_descr{t,1} tmp_train_all_desc(:,t)] ; % HoG
-%             end
-%             
-%             % Classification results
-%             tic;
-%             err = 0;
-%             err = Classification_with_DimRed(unique_train_all_descriptors, final_train_descr, final_test_descr, train_labels, test_labels, N_train, N_test, fid);
-%             results_classification_err(i,k,j) = err;
-%             fprintf(fid,'Classification without dimRed elapsed time: %6f \n',toc);
-%             fclose(fid);
-%             
-%         end
     end
     fprintf('\n');
     

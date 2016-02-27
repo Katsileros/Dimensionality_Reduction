@@ -5,11 +5,13 @@
  %  \copyright 
  %
 
-function Y = digits(X, testX, K ,d , fid, N_train, batch_size, folder)
+function Y = digits(X, K ,d , fid)
 
 % Digit Dataset
-fprintf(fid,'Running MNIST digits exp with K=%d, d=%d, and batch_size=%d \n',K, d, batch_size);
+fprintf(fid,'Running MNIST digits exp with K=%d, d=%d \n',K, d);
 
-Y = lle([X(:,1:batch_size)], K, d, fid, folder);
+Y = lle(X, K, d, fid);
+% noDim red test
+% Y = X;
 
 end
