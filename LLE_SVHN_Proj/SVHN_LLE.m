@@ -8,7 +8,7 @@
 % Running SVHN-LLE Experiments
 clear all; close all; clc;
 
-folder_exp = 'SVHN_LLE_Experiments/';
+folder_exp = 'SVHN_LLE_Proj_Experiments/';
 mkdir(folder_exp);
 
 fid = fopen(strcat(folder_exp,'time1.txt'),'w');
@@ -16,12 +16,9 @@ fprintf(fid,'Start \n %s \n',datestr(now));
 fclose(fid);
 
 % Num of neighbors
-% K = [8; 10; 12];
 K = [12];
 
 % Num of new dimensionality 
-% d = [16; 20; 32; 64; 96; 128; 164; 196; 256]; % HoG
-% d = [16; 20; 32; 64; 96]; % SIFT
 d = [32];
 
 % HoG kernel size 
@@ -40,41 +37,45 @@ load('dataset/test_labels.mat');
 
 %% Subsampling data
 % Clust size is the number of train data for each class
-clust_size = 300;
-clust_ids = cell(10,1);
-final_data = zeros(size(X,1),size(X,2),clust_size*10);
-final_labels = zeros(clust_size*10,1);
-for i=1:10
-    clust_ids{i,1} = find(train_labels == i);
-    tmp_rand_ids = randperm(length(clust_ids{i,1}))';
-    for j=1:clust_size
-        final_data(:,:,(i-1)*clust_size + j) = single(X(:,:,clust_ids{i,1}(tmp_rand_ids(j,1)),1));
-        final_labels((i-1)*clust_size + j,1) = train_labels(clust_ids{i,1}(tmp_rand_ids(j,1),1),1);
-    end
-end
+%clust_size = 300;
+%clust_ids = cell(10,1);
+%final_data = zeros(size(X,1),size(X,2),clust_size*10);
+%final_labels = zeros(clust_size*10,1);
+%for i=1:10
+%    clust_ids{i,1} = find(train_labels == i);
+%    tmp_rand_ids = randperm(length(clust_ids{i,1}))';
+%    for j=1:clust_size
+%        final_data(:,:,(i-1)*clust_size + j) = single(X(:,:,clust_ids{i,1}(tmp_rand_ids(j,1)),1));
+%        final_labels((i-1)*clust_size + j,1) = train_labels(clust_ids{i,1}(tmp_rand_ids(j,1),1),1);
+%    end
+%end
 
 %  Train Data-size
-clear X;
-X = final_data;
-clear final_data;
-N_train = size(X,3);
+%clear X;
+%X = final_data;
+%clear final_data;
+%N_train = size(X,3);
 
-clear train_labels;
-train_labels = final_labels;
-clear final_labels;
+%clear train_labels;
+%train_labels = final_labels;
+%clear final_labels;
 
 % %N_train = 1000;
-% X = single(X(:,:,1:N_train));
+N_train = size(X,3);
+X = single(X(:,:,1:N_train));
 
 % Test Data-size
-% N_test = size(testX,3);
-N_test = 200;
+N_test = size(testX,3);
+%N_test = 200;
 testX = single(testX(:,:,1:N_test));
 
 %% Preprocessing
 % Normalize data for better classification performance
 X = X ./ 255;
 testX = testX ./ 255;
+
+features_on = 0;
+if(features_on)
 
 fprintf('Train data feature extraction ... \n');
 
@@ -89,12 +90,6 @@ for i=1:N_train
     train_all_descriptors = [train_all_descriptors; train_descriptors{i,1}];
 end
 
-% [unique_train_all_descriptors,unique_train_desc,unique_train_bins] = unique(train_all_descriptors','rows');   % SIFT
-[unique_train_all_descriptors,unique_train_desc,unique_train_bins] = unique(train_all_descriptors,'rows');      % HoG
-unique_train_all_descriptors = double(unique_train_all_descriptors(unique_train_bins,:)');
-train_all_descriptors = train_all_descriptors(unique_train_bins,:);
-Ntrain = size(unique_train_all_descriptors,2);
-
 fprintf('Test data feature extraction ... \n');
 %% Apply Features on Test
 test_features = cell(N_test,1);
@@ -106,6 +101,22 @@ for i=1:N_test
     test_descriptors{i,1} = extractHOGFeatures(testX(:,:,i),'CellSize',hog_kernel);
     test_all_descriptors = [test_all_descriptors; test_descriptors{i,1}];
 end
+
+save('dataset/train_all_descriptors.mat','train_all_descriptors');
+save('dataset/test_all_descriptors.mat','test_all_descriptors');
+
+else
+  fprintf('Loading train and test HoG descriptors \n');
+  load('dataset/train_all_descriptors.mat');
+  load('dataset/test_all_descriptors.mat');
+end
+
+
+[unique_train_all_descriptors,unique_train_desc,unique_train_bins] = unique(train_all_descriptors,'rows');      % HoG
+unique_train_all_descriptors = double(unique_train_all_descriptors(unique_train_bins,:)');
+train_all_descriptors = train_all_descriptors(unique_train_bins,:);
+Ntrain = size(unique_train_all_descriptors,2);
+
 
 % Batch size (Must be grater thna K) 
 batch_size = Ntrain;

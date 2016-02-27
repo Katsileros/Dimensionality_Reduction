@@ -30,8 +30,6 @@ clear tmp;
 
 numNeighbors = 4;
 [IDX,~] = knnsearch(D_train_descr', test_descr', 'K', numNeighbors);
-% [IDX,~] = knnsearch(train_descr', test_descr', 'K', numNeighbors);
-
 
 %% Project test data
 nn_graph = zeros(N_train,size(test_descr,2));
