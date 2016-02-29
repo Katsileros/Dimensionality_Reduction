@@ -37,32 +37,32 @@ load('dataset/test_labels.mat');
 
 %% Subsampling data
 % Clust size is the number of train data for each class
-%clust_size = 300;
-%clust_ids = cell(10,1);
-%final_data = zeros(size(X,1),size(X,2),clust_size*10);
-%final_labels = zeros(clust_size*10,1);
-%for i=1:10
-%    clust_ids{i,1} = find(train_labels == i);
-%    tmp_rand_ids = randperm(length(clust_ids{i,1}))';
-%    for j=1:clust_size
-%        final_data(:,:,(i-1)*clust_size + j) = single(X(:,:,clust_ids{i,1}(tmp_rand_ids(j,1)),1));
-%        final_labels((i-1)*clust_size + j,1) = train_labels(clust_ids{i,1}(tmp_rand_ids(j,1),1),1);
-%    end
-%end
+clust_size = 4000;
+clust_ids = cell(10,1);
+final_data = zeros(size(X,1),size(X,2),clust_size*10);
+final_labels = zeros(clust_size*10,1);
+for i=1:10
+    clust_ids{i,1} = find(train_labels == i);
+    tmp_rand_ids = randperm(length(clust_ids{i,1}))';
+    for j=1:clust_size
+        final_data(:,:,(i-1)*clust_size + j) = single(X(:,:,clust_ids{i,1}(tmp_rand_ids(j,1)),1));
+        final_labels((i-1)*clust_size + j,1) = train_labels(clust_ids{i,1}(tmp_rand_ids(j,1),1),1);
+    end
+end
 
 %  Train Data-size
-%clear X;
-%X = final_data;
-%clear final_data;
-%N_train = size(X,3);
+clear X;
+X = final_data;
+clear final_data;
+N_train = size(X,3);
 
-%clear train_labels;
-%train_labels = final_labels;
-%clear final_labels;
+clear train_labels;
+train_labels = final_labels;
+clear final_labels;
 
 % %N_train = 1000;
-N_train = size(X,3);
-X = single(X(:,:,1:N_train));
+%N_train = size(X,3);
+%X = single(X(:,:,1:N_train));
 
 % Test Data-size
 N_test = size(testX,3);
@@ -74,7 +74,7 @@ testX = single(testX(:,:,1:N_test));
 X = X ./ 255;
 testX = testX ./ 255;
 
-features_on = 0;
+features_on = 1;
 if(features_on)
 
 fprintf('Train data feature extraction ... \n');
