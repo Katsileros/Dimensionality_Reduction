@@ -37,27 +37,37 @@ load('dataset/test_labels.mat');
 
 %% Subsampling data
 % Clust size is the number of train data for each class
-clust_size = 4000;
+clust_size = 150;
 clust_ids = cell(10,1);
 final_data = zeros(size(X,1),size(X,2),clust_size*10);
 final_labels = zeros(clust_size*10,1);
+sum_ids = 0;
 for i=1:10
     clust_ids{i,1} = find(train_labels == i);
     tmp_rand_ids = randperm(length(clust_ids{i,1}))';
-    for j=1:clust_size
-        final_data(:,:,(i-1)*clust_size + j) = single(X(:,:,clust_ids{i,1}(tmp_rand_ids(j,1)),1));
-        final_labels((i-1)*clust_size + j,1) = train_labels(clust_ids{i,1}(tmp_rand_ids(j,1),1),1);
+    if(clust_size > size(clust_ids{i,1},1))
+        for j=1:size(clust_ids{i,1},1)
+            final_data(:,:,(i-1)*clust_size + j) = single(X(:,:,clust_ids{i,1}(tmp_rand_ids(j,1)),1));
+            final_labels((i-1)*clust_size + j,1) = train_labels(clust_ids{i,1}(tmp_rand_ids(j,1),1),1);
+        end
+        sum_ids = sum_ids + size(clust_ids{i,1},1);
+    else
+        for j=1:clust_size
+            final_data(:,:,(i-1)*clust_size + j) = single(X(:,:,clust_ids{i,1}(tmp_rand_ids(j,1)),1));
+            final_labels((i-1)*clust_size + j,1) = train_labels(clust_ids{i,1}(tmp_rand_ids(j,1),1),1);
+        end
+        sum_ids = sum_ids + clust_size;
     end
 end
 
 %  Train Data-size
 clear X;
-X = final_data;
+X = final_data(:,:,1:sum_ids);
 clear final_data;
 N_train = size(X,3);
 
 clear train_labels;
-train_labels = final_labels;
+train_labels = final_labels(1:sum_ids,1);
 clear final_labels;
 
 % %N_train = 1000;
@@ -65,8 +75,8 @@ clear final_labels;
 %X = single(X(:,:,1:N_train));
 
 % Test Data-size
-N_test = size(testX,3);
-%N_test = 200;
+% N_test = size(testX,3);
+N_test = 200;
 testX = single(testX(:,:,1:N_test));
 
 %% Preprocessing
