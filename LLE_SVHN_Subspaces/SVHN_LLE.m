@@ -1,7 +1,7 @@
  % 
  %  \brief     Running on SVHN dataset, LLE algorithm
  %  \author    Katsileros Petros
- %  \date      18/02/2016
+ %  \date      01/03/2016
  %  \copyright 
  %
 
@@ -21,7 +21,7 @@ K = [12];
 
 % Num of new dimensionality 
 % d = [16; 20; 32; 64; 96; 128; 164; 196; 256]; % HoG
-d = [32;48];
+d = [32];
 
 % HoG kernel size 
 hog_kernel = [4 4];
@@ -35,28 +35,41 @@ load('dataset/train_labels.mat');
 load('dataset/test_labels.mat');
 
 %% Subsampling data
-% Clust size is the number of train data for each class
-clust_size = 80;
 clust_ids = cell(10,1);
-final_data = zeros(size(X,1),size(X,2),clust_size*10);
-final_labels = zeros(clust_size*10,1);
+min_clust_size = intmax('int64');
 for i=1:10
     clust_ids{i,1} = find(train_labels == i);
-    tmp_rand_ids = randperm(length(clust_ids{i,1}))';
-    for j=1:clust_size
-        final_data(:,:,(i-1)*clust_size + j) = single(X(:,:,clust_ids{i,1}(tmp_rand_ids(j,1)),1));
-        final_labels((i-1)*clust_size + j,1) = train_labels(clust_ids{i,1}(tmp_rand_ids(j,1),1),1);
+    if(size(clust_ids{i,1},1) < min_clust_size)
+        min_clust_size = size(clust_ids{i,1},1);
+    end
+end
+
+%clust_size = 1500;
+clust_size = min_clust_size;
+final_data = zeros(size(X,1),size(X,2),clust_size*10);
+final_labels = zeros(clust_size*10,1);
+
+num_sub_spaces = 3;
+subspaces_length = floor(clust_size ./ num_sub_spaces);
+
+for nsb=1:num_sub_spaces
+    for i=1:10
+        for j=1:subspaces_length
+            final_data(:,:,(i-1)*(clust_size./num_sub_spaces) + (nsb-1)*(subspaces_length.*10) + j) = single(X(:,:,clust_ids{i,1}((nsb-1)*subspaces_length + j,1)));
+            final_labels((i-1)*(clust_size./num_sub_spaces) + (nsb-1)*(subspaces_length.*10) + j,1) = train_labels(clust_ids{i,1}((nsb-1)*subspaces_length + j,1),1);
+
+%%%%%%%%%%%%%%%%%%%% Testing %%%%%%%%%%%%%%%%%%%%%%%
+%             final_labels((i-1)*(clust_size./num_sub_spaces) + (nsb-1)*(subspaces_length.*10) + j,1) = (nsb-1)*subspaces_length + j;
+%             final_labels((i-1)*(clust_size./num_sub_spaces) + (nsb-1)*(subspaces_length.*10) + j,1) = ...
+%                          (i-1)*(clust_size./num_sub_spaces) + (nsb-1)*(subspaces_length.*10) + j;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        end
     end
 end
 
 %  Train Data-size
 clear X;
-N_train = clust_size*10;
-% Mix train data
-tmp_rand_ids = randperm(N_train);
-X = final_data(:,:,tmp_rand_ids);
-clear train_labels;
-final_labels = final_labels(tmp_rand_ids,1);
+X = final_data;
 clear final_data;
 N_train = size(X,3);
 
@@ -66,7 +79,7 @@ clear final_labels;
 
 % Test Data-size
 % N_test = size(testX,3);
-N_test = 100;
+N_test = 1000;
 testX = single(testX(:,:,1:N_test));
 
 %% Preprocessing
@@ -111,8 +124,8 @@ Ntest = size(unique_test_all_descriptors,2);
 
 % Batch size 
 % batch_size = floor([ Ntrain; (Ntrain./2); (Ntrain./4); (Ntrain./5) ]);
-% batch_size = floor([ Ntrain; (Ntrain./5)]);
-batch_size = Ntrain;
+batch_size = floor([(Ntrain./num_sub_spaces)]);
+% batch_size = Ntrain;
 
 results_classification_err = zeros(length(K), length(batch_size),length(d));
 
