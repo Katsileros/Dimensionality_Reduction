@@ -1,7 +1,7 @@
  % 
  %  \brief     Running on SVHN dataset, LLE algorithm
  %  \author    Katsileros Petros
- %  \date      01/03/2016
+ %  \date      18/02/2016
  %  \copyright 
  %
 
@@ -34,7 +34,17 @@ load('dataset/testX.mat');
 load('dataset/train_labels.mat');
 load('dataset/test_labels.mat');
 
+% load('dataset/ramd_ids.mat');
+tmp = randperm(size(X,3));
+X = X(:,:,tmp);
+train_labels = train_labels(tmp,1);
+save('dataset/rand_ids.mat','tmp');
+clear tmp;
+
 %% Subsampling data
+% Clust size is the number of train data for each class
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%% FIX THIS PART HERE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 clust_ids = cell(10,1);
 min_clust_size = intmax('int64');
 for i=1:10
@@ -44,8 +54,8 @@ for i=1:10
     end
 end
 
-%clust_size = 1500;
-clust_size = min_clust_size;
+clust_size = 3000;
+% clust_size = min_clust_size-100;
 final_data = zeros(size(X,1),size(X,2),clust_size*10);
 final_labels = zeros(clust_size*10,1);
 
@@ -67,6 +77,8 @@ for nsb=1:num_sub_spaces
     end
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 %  Train Data-size
 clear X;
 X = final_data;
@@ -87,6 +99,8 @@ testX = single(testX(:,:,1:N_test));
 X = X ./ 255;
 testX = testX ./ 255;
 
+features = 1;
+if(features)
 fprintf('Train data feature extraction ... \n');
 
 %% Apply Features on Train
@@ -122,6 +136,14 @@ unique_test_all_descriptors = double(unique_test_all_descriptors(unique_test_bin
 test_all_descriptors = test_all_descriptors(unique_test_bins,:);
 Ntest = size(unique_test_all_descriptors,2);
 
+save('dataset/train_all_descriptors.mat','train_all_descriptors');
+save('dataset/test_all_descriptors.mat','test_all_descriptors');
+
+else
+    fprintf('Loading train and test descriptors');
+    load('dataset/train_all_descriptors.mat');
+    load('dataset/test_all_descriptors.mat');
+end
 % Batch size 
 % batch_size = floor([ Ntrain; (Ntrain./2); (Ntrain./4); (Ntrain./5) ]);
 batch_size = floor([(Ntrain./num_sub_spaces)]);

@@ -79,18 +79,14 @@ for iter=1:floor(Ntrain ./ batch_size)
 
 end
 
-digit_labels = [1:10];
-subSpace_classification_labeling = zeros(1,N_test);
+% digit_labels = [1:10];
+subSpace_classification_labeling = zeros(1,Ntest);
 error_labels = zeros(1,10);
 % Subspaces voting classification
 for i=1:N_test
     subSpace_voting = zeros(1,10);
-    for iter=1:floor(N_train ./ batch_size)
-        for j=1:10
-            if(all_spaces_classification_labeling(iter,i) == digit_labels(1,j))
-                subSpace_voting(1,j) = subSpace_voting(1,j) + 1;
-            end
-        end
+    for iter=1:floor(Ntrain ./ batch_size)
+        subSpace_voting(1,all_spaces_classification_labeling(iter,i)) = subSpace_voting(1,all_spaces_classification_labeling(iter,i)) + 1;
     end
     
     [~,subSpace_classification_labeling(1,i)] = max(subSpace_voting);
