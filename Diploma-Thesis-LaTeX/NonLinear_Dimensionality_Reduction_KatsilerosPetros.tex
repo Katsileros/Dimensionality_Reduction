@@ -1,0 +1,65 @@
+
+\documentclass[a4paper,12pt,twoside]{report}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=3cm]{geometry}
+\usepackage{graphicx}
+\usepackage{verbatim}
+\usepackage{latexsym}
+\usepackage{setspace}
+\usepackage[english,greek]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage[LGR, T1]{fontenc}
+
+\input{icthesis.sty}
+\begin{document}
+\title{\LARGE {\bf ΜΗ ΓΡΑΜΜΙΚΗ ΜΕΙΩΣΗ ΔΙΑΣΤΑΣΕΩΝ \\ 
+	    ΜΕ ΤΗ ΧΡΗΣΗ ΤΟΥ ΑΛΓΟΡΙΘΜΟΥ 
+	    \textlatin{LOCALLY LINEAR EMBEDDINGS} ΚΑΙ \\
+	    ΣΤΟΧΟ ΤΗ ΒΕΛΤΙΩΣΗ ΤΟΥ ΠΟΣΟΣΤΟΥ ΤΑΞΙΝΟΜΗΣΗΣ \\ 
+	    ΣΕ ΕΦΑΡΜΟΓΕΣ ΕΞΟΡΥΞΗΣ ΓΝΩΣΗΣ ΚΑΙ ΜΗΧΑΝΙΚΗΣ ΜΑΘΗΣΗΣ} \\
+ \vspace*{16mm}
+}
+
+\author{Πέτρος Κατσιλέρος}
+\submitdate{ΜΑΡΤΙΟΣ 2016}
+
+%\normallinespacing
+\maketitle
+
+\preface
+
+\pagenumbering{arabic}
+
+\input{abstract/abstract}
+\input{acknowledgements/acknowledgements}
+\input{dedication/dedication}
+\input{quotes/quotes}
+
+%\setcounter{page}{1}
+
+\tableofcontents
+%\setcounter{chapter}{0}
+%\setcounter{section}{0}
+
+% body of thesis comes here
+%\addcontentsline{toc}{chapter}{Εισαγωγή}
+\input{Chapters/introduction}
+
+%\addcontentsline{toc}{chapter}{Αλγόριθμοι μείωσης διαστάσεων}
+\input{Chapters/Chapter2}
+%\addcontentsline{toc}{chapter}{Ανάλυση του αλγορίθμου \textlatin{Locally Linear Embeddings}}
+\input{Chapters/Chapter3}
+%\addcontentsline{toc}{chapter}{Πειράματα}
+\input{Chapters/Chapter4}
+
+%\addcontentsline{toc}{chapter}{Συμπεράσματα-Εφαρμογές-Μελλοντική δουλειά}
+\input{Chapters/conclusion}
+
+\appendix
+% appendices come here
+
+
+\addcontentsline{toc}{chapter}{Βιβλιογραφία}
+\bibliographystyle{alpha}
+\bibliography{bibliography/bibliography}
+
+\end{document}
