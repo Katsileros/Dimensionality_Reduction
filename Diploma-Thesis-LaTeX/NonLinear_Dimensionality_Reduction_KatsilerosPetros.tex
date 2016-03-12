@@ -10,6 +10,7 @@
 \usepackage[LGR, T1]{fontenc}
 
 \input{icthesis.sty}
+
 \begin{document}
 \title{\LARGE {\bf ΜΗ ΓΡΑΜΜΙΚΗ ΜΕΙΩΣΗ ΔΙΑΣΤΑΣΕΩΝ \\ 
 	    ΜΕ ΤΗ ΧΡΗΣΗ ΤΟΥ ΑΛΓΟΡΙΘΜΟΥ 
@@ -22,7 +23,6 @@
 \author{Πέτρος Κατσιλέρος}
 \submitdate{ΜΑΡΤΙΟΣ 2016}
 
-%\normallinespacing
 \maketitle
 
 \preface
@@ -34,24 +34,23 @@
 \input{dedication/dedication}
 \input{quotes/quotes}
 
-%\setcounter{page}{1}
-
+\cleardoublepage    
 \tableofcontents
-%\setcounter{chapter}{0}
-%\setcounter{section}{0}
 
-% body of thesis comes here
-%\addcontentsline{toc}{chapter}{Εισαγωγή}
+\cleardoublepage
+\listoftables
+
+\cleardoublepage
+\listoffigures
+
+\cleardoublepage
+
 \input{Chapters/introduction}
 
-%\addcontentsline{toc}{chapter}{Αλγόριθμοι μείωσης διαστάσεων}
 \input{Chapters/Chapter2}
-%\addcontentsline{toc}{chapter}{Ανάλυση του αλγορίθμου \textlatin{Locally Linear Embeddings}}
 \input{Chapters/Chapter3}
-%\addcontentsline{toc}{chapter}{Πειράματα}
 \input{Chapters/Chapter4}
 
-%\addcontentsline{toc}{chapter}{Συμπεράσματα-Εφαρμογές-Μελλοντική δουλειά}
 \input{Chapters/conclusion}
 
 \appendix
