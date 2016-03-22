@@ -68,17 +68,17 @@ $\mathbf{x}^{T} = \begin{bmatrix}
 Μέσω αυτού του μετασχηματισμού ο αριθμός των πράξεων μειώνεται σε $\mathcal{O}(N^{3})$. Πιο αναλυτικά η παραπάνω εξίσωση θα μπορούσε να γραφεί ως
 \newline\hspace*{\fill}
 \begin{equation}
-        Χ = \sum_{i=0}^{N-1} \sum_{j=0}^{N-1} Y(i,j)\mathbf{u}_{i}\mathbf{\nu}_{j}^{H}
+        Χ = \sum_{i=0}^{N-1} \sum_{j=0}^{N-1} Y(i,j)\mathbf{u}_{i}\mathbf{v}_{j}^{H}
 \end{equation}
 \hspace*{\fill}\newline
 \newline
-όπου $\mathbf{u}_{i}$ είναι τα διανύσματα στήλης του U και $\mathbf{\nu}_{j}$ τα διανύσματα στήλης του V. Η παραπάνω εξίσωση είναι ένα ανάπτυγμα του μητρώου X ως προς τις $Ν\times2$ εικόνες βάσης. Τέλος κάθε ένα απο τα γινόμενα $\mathbf{u}_{i}\mathbf{\nu}_{j}$ είναι ένα μητρώο $Ν\timesΝ$ \\
+όπου $\mathbf{u}_{i}$ είναι τα διανύσματα στήλης του U και $\mathbf{v}_{j}$ τα διανύσματα στήλης του V. Η παραπάνω εξίσωση είναι ένα ανάπτυγμα του μητρώου X ως προς τις $Ν\times2$ εικόνες βάσης. Τέλος κάθε ένα απο τα γινόμενα $\mathbf{u}_{i}\mathbf{v}_{j}$ είναι ένα μητρώο $Ν\timesΝ$ \\
 \newline\hspace*{\fill}
 \begin{equation}
-        \mathbf{u}_{i}\mathbf{\nu}_{j}=\begin{bmatrix}
-        u_{i0}\nu_{j0}^{*}	 &	\ldots  &  u_{i0}\nu_{jN-1}^{*} 	\\
+        \mathbf{u}_{i}\mathbf{v}_{j}=\begin{bmatrix}
+        u_{i0}v_{j0}^{*}	 &	\ldots  &  u_{i0}v_{jN-1}^{*} 	\\
         \vdots				 &  	\vdots  &  \vdots \\
-        u_{iN-1}\nu_{j0}^{*} &    	\ldots  &  u_{iN-1}\nu_{jN-1}^{*} \\
+        u_{iN-1}v_{j0}^{*} &    	\ldots  &  u_{iN-1}v_{jN-1}^{*} \\
         \end{bmatrix}
 \end{equation}
 \hspace*{\fill}\newline
@@ -86,7 +86,7 @@ $\mathbf{x}^{T} = \begin{bmatrix}
 Στην περίπτωση κατα την οποία το Y είναι διαγώνιο τότε έχουμε \\
 \newline\hspace*{\fill}
 \begin{equation}
-        Χ = \sum_{i=0}^{N-1} Y(i,i)\mathbf{u}_{i}\mathbf{\nu}_{i}^{H}
+        Χ = \sum_{i=0}^{N-1} Y(i,i)\mathbf{u}_{i}\mathbf{v}_{i}^{H}
 \end{equation}
 \hspace*{\fill}\newline
 \newline
@@ -243,7 +243,7 @@ $\mathbf{x}^{T} = \begin{bmatrix}
 	\end{bmatrix} = U^{H}XV 
 \end{equation}
 \hspace*{\fill}\newline
-όπου $ \Lambda^{\frac{1}{2}} $ είναι το $r \times r$ διαγώνιο μητρώο με στοιχεία $ \sqrt{\lambda_{i}} $ με $ \lambda_{i} $ οι μη μηδενικές ιδιοτιμές που σχετίζονται με το μητρώο $X^{H}X$. Με $ \mathcal{O} $ συμβολίζουμε το μητρώο μηδενικών τιμών. Απο τα παραπάνω γίνεται φανερό ότι υπάρχουν μητρώα \textlatin{U} και \textlatin{V} που μετασχηματίζουν το \textlatin{X} στην διαγώνια δομή του \textlatin{Y}. Αν $ \mathbf{u}_{i}$,$\mathbf{\nu}_{i} $ είναι τα διανύσματα στήλης των μητρώων \textlatin{U} και \textlatin{V} αντίστοιχα τότε η παραπάνω εξίσωση μπορεί να γραφεί στην μορφή
+όπου $ \Lambda^{\frac{1}{2}} $ είναι το $r \times r$ διαγώνιο μητρώο με στοιχεία $ \sqrt{\lambda_{i}} $ με $ \lambda_{i} $ οι μη μηδενικές ιδιοτιμές που σχετίζονται με το μητρώο $X^{H}X$. Με $ \mathcal{O} $ συμβολίζουμε το μητρώο μηδενικών τιμών. Απο τα παραπάνω γίνεται φανερό ότι υπάρχουν μητρώα \textlatin{U} και \textlatin{V} που μετασχηματίζουν το \textlatin{X} στην διαγώνια δομή του \textlatin{Y}. Αν $ \mathbf{u}_{i}$,$\mathbf{v}_{i} $ είναι τα διανύσματα στήλης των μητρώων \textlatin{U} και \textlatin{V} αντίστοιχα τότε η παραπάνω εξίσωση μπορεί να γραφεί στην μορφή
 \newline\hspace*{\fill}
 \begin{equation}
          X = [u_{0},u_{1},\ldots,u_{r-1},] \begin{bmatrix}
@@ -257,34 +257,34 @@ $\mathbf{x}^{T} = \begin{bmatrix}
 &&& \sqrt{\lambda_{r-1}} \\
 \end{bmatrix}
 \begin{bmatrix}
-	\mathbf{\nu}_{0}^{H} \\
-	\mathbf{\nu}_{1}^{H} \\
+	\mathbf{v}_{0}^{H} \\
+	\mathbf{v}_{1}^{H} \\
 	\vdots \\
-	\mathbf{\nu}_{r-1}^{H} \\
+	\mathbf{v}_{r-1}^{H} \\
 \end{bmatrix}
 \end{equation}
 \hspace*{\fill}\newline
 ή
 \newline\hspace*{\fill}
 \begin{equation}
-	X = \sum_{i=0}^{r-1} \sqrt{\lambda_{i}} \mathbf{u}_{i}\mathbf{\nu}_{i}^{H} = U_{r}\Lambda^{\frac{1}{2}}V_{r}^{H}
+	X = \sum_{i=0}^{r-1} \sqrt{\lambda_{i}} \mathbf{u}_{i}\mathbf{v}_{i}^{H} = U_{r}\Lambda^{\frac{1}{2}}V_{r}^{H}
 \end{equation}
 \hspace*{\fill}\newline
-όπου $U_{r}$ δηλώνει το $l \times r$ μητρώο που αποτελείται απο τις \textlatin{r} πρώτες στήλες του \textlatin{U} και $V_{r}$ το $r \times n$ μητρώο που σχηματίζεται χρησιμοποιώντας τις πρώτες \textlatin{r} στήλες του \textlatin{V}. Επίσης $ \mathbf{u}_{i} $,$ \mathbf{\nu}_{i} $ είναι τα ιδιοδιανύσματα που αντιστοιχούν στις μη μηδενικές ιδιοτιμές των μητρώων $XX^{H}$ και $X^{H}X$ αντίστοιχα. Οι ιδιοτιμές $ \lambda_{i} $ είναι γνωστές ως \textit{ιδιάζουσες τιμές} \textlatin(singular values) του $X$ και το ανάπτυγμα της παραπάνω εξίσωσης ως \textit{ανάλυση με βάση τις ιδιάζουσες τιμές} \textlatin{(singular value decomposition - SVD)} του $X$.
+όπου $U_{r}$ δηλώνει το $l \times r$ μητρώο που αποτελείται απο τις \textlatin{r} πρώτες στήλες του \textlatin{U} και $V_{r}$ το $r \times n$ μητρώο που σχηματίζεται χρησιμοποιώντας τις πρώτες \textlatin{r} στήλες του \textlatin{V}. Επίσης $ \mathbf{u}_{i} $,$ \mathbf{v}_{i} $ είναι τα ιδιοδιανύσματα που αντιστοιχούν στις μη μηδενικές ιδιοτιμές των μητρώων $XX^{H}$ και $X^{H}X$ αντίστοιχα. Οι ιδιοτιμές $ \lambda_{i} $ είναι γνωστές ως \textit{ιδιάζουσες τιμές} \textlatin(singular values) του $X$ και το ανάπτυγμα της παραπάνω εξίσωσης ως \textit{ανάλυση με βάση τις ιδιάζουσες τιμές} \textlatin{(singular value decomposition - SVD)} του $X$.
 \subsection{Μείωση της διάστασης μέσω \textlatin{SVD}}
 \par
 Η μέθοδος \textlatin{SVD} έχει χρησιμοποιηθεί εκτενώς για την μείωση της διάστασης του χώρου χαρακτηριστικών σε ένα μεγάλο εύρος εφαρμογών αναγνώρισης προτύπων. Έστω οτι έχουμε την προσέγγιση χαμηλού βαθμού \textlatin{(low rank approximation)} $ \hat{X} $ του \textlatin{X}. Αποδεικνύεται μέσω ελαχιστοποίησης του μέσου τετραγωνικού σφάλματος ότι αν η παραπάνω προσέγγιση σχηματίζεται απο την άθροιση των \textlatin{k} μεγαλύτερων ιδιοτιμών τότε το μέσο τετραγωνικό σφάλμα της προσέγγισης είναι το ελάχιστο. Μπορούμε να καταλήξουμε στο συμπέρασμα ότι η μέθοδος \textlatin{SVD} οδηγεί στο ελάχιστο τετραγωνικό σφάλμα και επομένων το $ \hat{X} $ είναι η καλύτερη \textit{προσέγγιση βαθμού \textlatin{k}} του \textlatin{X}. Η προσέγγιση αυτή δίνεται απο τον τύπο \\
 \newline\hspace*{\fill}
-$ X \simeq \hat{X} = \sum_{i=0}^{k-1} \sqrt{\lambda_{i}} \mathbf{u}_{i}\mathbf{\nu}_{i}^{H},\quad k \leq r $
+$ X \simeq \hat{X} = \sum_{i=0}^{k-1} \sqrt{\lambda_{i}} \mathbf{u}_{i}\mathbf{v}_{i}^{H},\quad k \leq r $
 \hspace*{\fill}\newline
 \newline\hspace*{\fill}
 \begin{equation}
 	= [\mathbf{u}_{0},\mathbf{u}_{1},\ldots,\mathbf{u}_{k-1}]
 	\begin{bmatrix}
-	\sqrt{\lambda_{0}}\mathbf{\nu}_{0}^{H} \\
-	\sqrt{\lambda_{1}}\mathbf{\nu}_{1}^{H} \\
+	\sqrt{\lambda_{0}}\mathbf{v}_{0}^{H} \\
+	\sqrt{\lambda_{1}}\mathbf{v}_{1}^{H} \\
 	\vdots \\ 
-	\sqrt{\lambda_{k-1}}\mathbf{\nu}_{k-1}^{H}
+	\sqrt{\lambda_{k-1}}\mathbf{v}_{k-1}^{H}
 	\end{bmatrix} 
 	= U_{k}[\mathbf{a}_{0},\mathbf{a}_{1},\ldots,\mathbf{a}_{n-1},]
 \end{equation}
