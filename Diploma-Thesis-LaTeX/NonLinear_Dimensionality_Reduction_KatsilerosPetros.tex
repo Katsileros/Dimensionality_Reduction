@@ -9,6 +9,9 @@
 \usepackage[english,greek]{babel}
 \usepackage[utf8x]{inputenc}
 \usepackage[LGR, T1]{fontenc}
+\usepackage[nottoc]{tocbibind}
+\usepackage{hyperref}
+\hypersetup{colorlinks, citecolor=black, filecolor=black, linkcolor=black, urlcolor=black}
 
 \input{icthesis.sty}
 
@@ -51,12 +54,12 @@
 
 \input{Chapters/conclusion}
 
-\appendix
-% appendices come here
+\medskip
+\mbox{}
 
-
-\addcontentsline{toc}{chapter}{Βιβλιογραφία}
-\bibliographystyle{alpha}
+%\addcontentsline{toc}{chapter}{Βιβλιογραφία}
+\bibliographystyle{unsrt}
+\selectlanguage{english}
 \bibliography{bibliography/bibliography}
 
 \end{document}

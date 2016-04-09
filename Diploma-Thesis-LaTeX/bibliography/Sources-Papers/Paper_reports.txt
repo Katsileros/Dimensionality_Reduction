@@ -1,0 +1,28 @@
+Supervised Locally Linear Embedding Algorithm for Pattern Recognition
+=====================================================================
+
+Supervised LLE algorithm: Τα αποτελέσματά τους δεν είναι ικανοποιητικά. Συγκεκριμένα, αναφέρουν οτι οι υλοποιήσεις τους πετυχαίνουν average-accuracy: 95.86% με k-nearest neighbors στον d-διάστατο χώρο. Υποστηρίζουν επίσης ότι το average-accuracy στον D-διάστατο χώρο είναι 94.02% ενώ εγώ με k-nearest neighbors στον αρχικό χώρο έχω σαν αποτέλεσμα average-accuracy: ~97.1. Επίσης, δεν αναφέρουν τίποτα για τον χρόνο εκτέλεσης σε κάθε περίπτωση.
+
+
+Locally linear embedding for classification
+===========================================
+
+
+
+
+Dimensionality reduction and visualization of geoscientific images via locally linear embedding
+===============================================================================================
+
+Visualization of geoscientific images: Χρησιμοποιούνε πάρα πολύ μικρά datset, και κάνουν την επιβεβαίωση ότι υπάρχει αναγνώριση pattern στις εικόνες οπτικά. Βλέπουν δηλαδή σε ένα Plot ότι ο αλγόριθμος χωρίζει το αρχικό dataset σε περιοχές.
+
+
+Multiview Locally Linear Embedding for Effective Medical Image Retreival
+========================================================================
+
+Multiview LLE: Αυτό, κατα την γνώμη μου είναι ένα απο τα πιο αξιόλογα. Κάνουν εξαγωγή χαρακτηριστικών (SIFT,Locally Binary Patterns,Pixel Intensity) χωρίζοντας παράλληλα την εικόνα σε περιοχές και πάνω σε αυτά εφαρμόζουν dimensionality reduction.
+
+
+Locally Linear Embedding for MRI based Alzheimer's Disease Classification
+=========================================================================
+
+Εφαρμόζουν τον LLE σε MRI εικόνες, και χρησιμοποιούν το αποτέλεσμα ώστε να κάνουν data-visualization επαληθεύοντας το clustering που κάνει ο αλγόριθμος ανάλογα με το που κατατάσει την κάθε εικόνα. Στην ενότητα Classifications αναφέρουν χαρακτηριστικά: Overall classifications using LLE features performed significantly better or at least as good as classifications that used the features directly. Είναι το πιο πλήρες paper απο άποψη αποτελεσμάτων τόσο ως προς την ποιότητά τους όσο και ως προς την σύγκρισή τους με παρόμοιες δουλειές.
