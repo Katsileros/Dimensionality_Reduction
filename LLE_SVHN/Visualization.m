@@ -2,9 +2,18 @@
 
 clear all; close all; clc;
 % Param: [K batch d]
-load('SVHN_LLE_Experiments/results_classification_err');
 
-no_dimRed = 27.97;
+% [2x2] kernel
+% load('SVHN_LLE_Experiments/results_classification_err_kern2x2');
+% no_dimRed = 20.25;
+
+% [4x4] kernel
+load('SVHN_LLE_Experiments/results_classification_err_kern2x2');
+no_dimRed = 18.33;
+
+% [8x8] kernel
+%load('SVHN_LLE_Experiments/results_classification_err_kern2x2');
+%no_dimRed = 21.52;
 
 % Experiment parameters
 % LLE Num of neighbors
