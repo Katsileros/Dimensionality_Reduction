@@ -8,12 +8,12 @@ clear all; close all; clc;
 % no_dimRed = 20.25;
 
 % [4x4] kernel
-load('SVHN_LLE_Experiments/results_classification_err_kern2x2');
+load('SVHN_LLE_Experiments/results_classification_err_kern4x4');
 no_dimRed = 18.33;
 
 % [8x8] kernel
-%load('SVHN_LLE_Experiments/results_classification_err_kern2x2');
-%no_dimRed = 21.52;
+% load('SVHN_LLE_Experiments/results_classification_err_kern8x8');
+% no_dimRed = 21.52;
 
 % Experiment parameters
 % LLE Num of neighbors
@@ -57,7 +57,7 @@ for d=1:size(results_classification_err,3)
 end
 
 fprintf('Mean average error with dimensionality reduction: %f, dim: %d, batch: %d, neighbors: %d \n',...
-        min, dim(param(1,1),1), batch(param(2,1),1), neighbors(param(3,1),1));
+        min, dim(param(3,1),1), batch(param(2,1),1), neighbors(param(1,1),1));
 fprintf('Mean average error without dimensionality reduction: %f \n', no_dimRed);
 
 
