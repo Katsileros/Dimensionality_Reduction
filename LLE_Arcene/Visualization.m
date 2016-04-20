@@ -48,7 +48,7 @@ for d=1:size(results_classification_acc,3)
 end
 
 fprintf('Best accuracy with dimensionality reduction: %f, dim: %d, batch: %d, neighbors: %d \n',...
-        max_acc, dim(param(1,1),1), batch(param(2,1),1), neighbors(param(3,1),1));
+        max_acc, dim(param(3,1),1), batch(param(2,1),1), neighbors(param(1,1),1));
 fprintf('Accuracy without dimensionality reduction: %f \n', no_dimRed);
 
 
