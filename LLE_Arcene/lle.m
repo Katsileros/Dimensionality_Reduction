@@ -109,7 +109,7 @@ save(strcat(folder,'eigenvals.mat'),'eigenvals');
 % eigenvals
 
 % Y = Y(:,2:d+1)'*sqrt(N); % bottom evect is [1,1,1,1...] with eval 0
-Y = Y(:,end-1:-1:end-d)'*sqrt(N);
+Y = Y(:,end-3:-1:end-d)'*sqrt(N);
 
 fprintf(fid,'Done.\n');
 

@@ -57,7 +57,7 @@ for d=1:size(results_classification_err,3)
 end
 
 fprintf('Mean average error with dimensionality reduction: %f, dim: %d, batch: %d, neighbors: %d \n',...
-        min, dim(param(3,1),1), batch(param(2,1),1), neighbors(param(1,1),1));
+        min, dim(param(1,1),1), batch(param(2,1),1), neighbors(param(3,1),1));
 fprintf('Mean average error without dimensionality reduction: %f \n', no_dimRed);
 
 
