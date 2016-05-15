@@ -34,12 +34,17 @@ load('dataset/testX.mat');
 load('dataset/train_labels.mat');
 load('dataset/test_labels.mat');
 
+rand_perm_on = 1;
+if(rand_perm_on)
 % load('dataset/ramd_ids.mat');
 tmp = randperm(size(X,3));
 X = X(:,:,tmp);
 train_labels = train_labels(tmp,1);
 save('dataset/rand_ids.mat','tmp');
 clear tmp;
+else
+  load('dataset/rand_ids.mat');
+end
 
 %% Subsampling data
 % Clust size is the number of train data for each class
@@ -54,17 +59,20 @@ for i=1:10
     end
 end
 
-clust_size = 3000;
+num_sub_spaces = 100;
+
+%clust_size = 1000;
+clust_size = (floor(min_clust_size./num_sub_spaces))*num_sub_spaces;
 % clust_size = min_clust_size-100;
 final_data = zeros(size(X,1),size(X,2),clust_size*10);
 final_labels = zeros(clust_size*10,1);
 
-num_sub_spaces = 3;
 subspaces_length = floor(clust_size ./ num_sub_spaces);
 
 for nsb=1:num_sub_spaces
-    for i=1:10
+   for i=1:10
         for j=1:subspaces_length
+%        fprintf('nsb: %d, i: %d, sl: %d \n', nsb, i, j);
             final_data(:,:,(i-1)*(clust_size./num_sub_spaces) + (nsb-1)*(subspaces_length.*10) + j) = single(X(:,:,clust_ids{i,1}((nsb-1)*subspaces_length + j,1)));
             final_labels((i-1)*(clust_size./num_sub_spaces) + (nsb-1)*(subspaces_length.*10) + j,1) = train_labels(clust_ids{i,1}((nsb-1)*subspaces_length + j,1),1);
 
@@ -83,15 +91,16 @@ end
 clear X;
 X = final_data;
 clear final_data;
-N_train = size(X,3);
+%N_train = size(X,3);
+N_train = 10*clust_size;
 
 clear train_labels;
 train_labels = final_labels;
 clear final_labels;
 
 % Test Data-size
-% N_test = size(testX,3);
-N_test = 1000;
+N_test = size(testX,3);
+%N_test = 5000;
 testX = single(testX(:,:,1:N_test));
 
 %% Preprocessing
@@ -99,8 +108,6 @@ testX = single(testX(:,:,1:N_test));
 X = X ./ 255;
 testX = testX ./ 255;
 
-features = 1;
-if(features)
 fprintf('Train data feature extraction ... \n');
 
 %% Apply Features on Train
@@ -136,18 +143,8 @@ unique_test_all_descriptors = double(unique_test_all_descriptors(unique_test_bin
 test_all_descriptors = test_all_descriptors(unique_test_bins,:);
 Ntest = size(unique_test_all_descriptors,2);
 
-save('dataset/train_all_descriptors.mat','train_all_descriptors');
-save('dataset/test_all_descriptors.mat','test_all_descriptors');
-
-else
-    fprintf('Loading train and test descriptors');
-    load('dataset/train_all_descriptors.mat');
-    load('dataset/test_all_descriptors.mat');
-end
 % Batch size 
-% batch_size = floor([ Ntrain; (Ntrain./2); (Ntrain./4); (Ntrain./5) ]);
 batch_size = floor([(Ntrain./num_sub_spaces)]);
-% batch_size = Ntrain;
 
 results_classification_err = zeros(length(K), length(batch_size),length(d));
 
@@ -198,7 +195,7 @@ for i=1:length(K)
         err = 0;
         err = Classification_with_DimRed(final_train_descr, final_test_descr, train_labels, test_labels, Ntrain, Ntest, batch_size(k,1), d(end,1), fid, batch_folder_name) ;
         results_classification_err(i,k,length(d)) = err;
-        fprintf(fid,'Classification without dimRed elapsed time: %6f \n',toc);
+        fprintf(fid,'Classification with dimRed elapsed time: %6f \n',toc);
         fclose(fid);
         
         % Keep the lower dimensions
