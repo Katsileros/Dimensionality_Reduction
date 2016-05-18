@@ -61,9 +61,9 @@ end
 
 num_sub_spaces = 100;
 
-%clust_size = 1000;
-clust_size = (floor(min_clust_size./num_sub_spaces))*num_sub_spaces;
-% clust_size = min_clust_size-100;
+clust_size = 1000;
+%clust_size = (floor(min_clust_size./num_sub_spaces))*num_sub_spaces;
+
 final_data = zeros(size(X,1),size(X,2),clust_size*10);
 final_labels = zeros(clust_size*10,1);
 
@@ -99,8 +99,8 @@ train_labels = final_labels;
 clear final_labels;
 
 % Test Data-size
-N_test = size(testX,3);
-%N_test = 5000;
+%N_test = size(testX,3);
+N_test = 5000;
 testX = single(testX(:,:,1:N_test));
 
 %% Preprocessing
@@ -114,7 +114,7 @@ fprintf('Train data feature extraction ... \n');
 train_features = cell(N_train,1);
 train_descriptors = cell(N_train,1);
 train_all_descriptors = [];
-for i=1:N_train
+parfor i=1:N_train
 %     fprintf('Running Feature extraction to training image - no: %d \n',i);
     % HoG features
     train_descriptors{i,1} = extractHOGFeatures(X(:,:,i),'CellSize',hog_kernel);
