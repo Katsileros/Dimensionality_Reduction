@@ -1,5 +1,4 @@
 
-
 \documentclass[a4paper,12pt,twoside]{report}
 \usepackage[left=2cm,right=2cm,top=2cm,bottom=3cm]{geometry}
 \usepackage{graphicx}
@@ -9,11 +8,11 @@
 \usepackage{mathtools}
 \usepackage[english,greek]{babel}
 \usepackage[utf8x]{inputenc}
-\usepackage[LGR, T1]{fontenc}
-\usepackage[nottoc]{tocbibind}
+\usepackage[LGR,T1]{fontenc}
+%\usepackage[nottoc]{tocbibind}
 \usepackage{hyperref
 }
-\hypersetup{colorlinks, citecolor=black, filecolor=black, linkcolor=black, urlcolor=black}
+\hypersetup{colorlinks, citecolor=black, filecolor=black, linkcolor=black, urlcolor=blue}
 \usepackage{listings}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
@@ -57,15 +56,20 @@
 \input{Chapters/Chapter5}
 \input{Chapters/Chapter6}
 
+
 \input{Chapters/conclusion}
 
 \medskip
 \mbox{}
 
-%\addcontentsline{toc}{chapter}{Βιβλιογραφία}
 \bibliographystyle{unsrt}
+%\selectlanguage{greek}
+%\addto\captionsgreek{\renewcommand{\bibname}{Βιβλιογραφία}}
 \selectlanguage{english}
 \bibliography{bibliography/bibliography}
+\selectlanguage{greek}
+%\addto\captionsgreek{\renewcommand{\bibname}{Βιβλιογραφία}}
+%\selectlanguage{english}
 
 \nocite{8}
 \nocite{9}
